@@ -6,6 +6,7 @@ import com.company.Controller.AdminController;
 import com.company.Controller.CancelarVueloController;
 import com.company.MVC.View;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CancelarVueloView implements View {
@@ -26,12 +27,22 @@ public class CancelarVueloView implements View {
     }
 
     public void show() {
-        Scanner sc = new Scanner(System.in);
+        System.out.print(titulo + "\n\n");    //estos son todos los datos que se necesitan
+        int canc = show(cancelarVuelo.getVuelo());
+        cancelo(canc);
 
-        System.out.print(titulo + "\n\n");
-        //aca debería mostrar con el execute ya sea si tiene vuelos para cancelar, como no
-        //TODO cancelarVueloController.execute();
-
-        //private String choice = sc.nextLine();
     }
+
+    private int show(ArrayList<String> vuelo) {
+        for (String dato: vuelo) {
+            System.out.printf(" %s", dato);
+        }
+        return vuelo.size();
+    }
+
+    public void cancelo(int canc){
+
+    }
+
+
 }

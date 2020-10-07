@@ -14,7 +14,7 @@ public class Vuelo implements Serializable {
     private Avion avion;
     private Ciudad ciudadOrigen;
     private Ciudad ciudadDestino;
-    //private float costo;
+    private float costo;
 
     public Vuelo(){}
 
@@ -26,6 +26,14 @@ public class Vuelo implements Serializable {
         this.ciudadOrigen = ciudadOrigen;
         this.ciudadDestino = ciudadDestino;
         //this.costo = calcularCosto();
+    }
+
+    public float getCosto() {
+        return costo;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
     public LocalTime getHora() {
@@ -48,6 +56,14 @@ public class Vuelo implements Serializable {
 
     public Avion getAvion() {
         return avion;
+    }
+
+    public String getUser(){
+        return this.getUsuario().getUser();
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 
     public boolean isOn(LocalDate date) {

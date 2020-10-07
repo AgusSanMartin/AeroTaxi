@@ -16,6 +16,8 @@ public class Registrar extends Model {
 
     public ArrayList getUserAregistrar() { return userAregistrar; }
 
-    public void agregarDato(String dato){ userAregistrar.add(dato);changed(); }
-
+    public void agregarDato(String dato){
+        userAregistrar.add(dato);
+        changed();
+    }
 }

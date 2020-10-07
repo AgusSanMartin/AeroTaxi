@@ -3,6 +3,7 @@ package com.company.Controller;
 import com.company.App.ContratarVuelo;
 import com.company.MVC.Controller;
 import com.company.Model.*;
+import com.company.Domain.CapaDatos;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,9 +31,9 @@ public class ContratarVueloController implements Controller {
     //6 - finalmente, mostrar y confirmar vuelo
 
     public boolean execute(String command) {
-        LocalDate fechaElegida= LocalDate.parse(command, DateTimeFormatter.ofPattern("dd/mm/yyyy"));
+        LocalDate fechaElegida = LocalDate.parse(command, DateTimeFormatter.ofPattern("mm/dd/yyyy"));
         if(contratarVuelo.getFechaElegida()==null) {
-            if (DateTimeFormatter.ofPattern("dd/mm/yyyy").equals(DateTimeFormatter.ofPattern(command))) {
+            if (DateTimeFormatter.ofPattern("mm/dd/yyyy").equals(DateTimeFormatter.ofPattern(command))) {
                 contratarVuelo.setFechaElegida(fechaElegida);
                 return true;
             }
@@ -72,41 +73,20 @@ public class ContratarVueloController implements Controller {
             return true;
         }
 
-        else if(contratarVuelo.getAcompañantes()==null){
-            contratarVuelo.setAcompañantes(command);
+        else if(contratarVuelo.getAcompañantes()==0){
+            int acompañantes = Integer.parseInt(command);
+            contratarVuelo.setAcompañantes(acompañantes);
             return true;
         }
 
-        else if(contratarVuelo.getListaAvion()==null){
-            
+        else if(contratarVuelo.getAvionDisponible()==null){
+
         }
 
 
 
         return false;
     }
-
-    /*public LocalDate ingresarFecha(){
-        LocalDate fecha;
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("\ningrese año (aaaa): ");     //toda esta parte es tentativa, podría hacerse
-        int año = sc.nextInt();                         //con solo un input con el formato adecuado
-        System.out.print("\ningrese mes (mm): ");
-        int mes = sc.nextInt();
-        System.out.print("\ningrese dia (dd) : ");
-        int dia = sc.nextInt();
-
-        //validar fecha
-
-        fecha = LocalDate.of(año, mes, dia);      //habria que poner una excepción si el formato no es
-        //el adecuado
-        return fecha;   //solo debe llegar aca cuando la fecha ingresada sea la correcta
-
-    }*/
-
-
 
     public void add(Vuelo vuelo) {
         this.vuelos.add(vuelo);
@@ -125,6 +105,8 @@ public class ContratarVueloController implements Controller {
         tarifa = descubrirTarifa(vuelo);
 
         costo_km = vuelo.getAvion().getCostoKM();
+
+        cant_km = descubrirCiudadOrigenYDestino(vuelo);
 
         System.out.println("Costo por km: " + costo_km);
         System.out.println("Cantidad de km: " + cant_km);

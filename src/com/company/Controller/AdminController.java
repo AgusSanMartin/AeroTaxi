@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class AdminController implements Controller {
 
-    private Admin admin;
+    private final Admin admin;
 
     public AdminController(Admin admin) {
         this.admin = admin;
@@ -26,10 +26,11 @@ public class AdminController implements Controller {
             case "1":
                 //lista de todos los vuelos programados para una fecha dada
 
-                LocalDate fecha = ingresarFecha();      //la fecha en la que se deben listar los vuelos
-                List<Vuelo> vuelos = CapaDatos.downloadVuelos();  //se trae la lista de vuelos guardada
+                LocalDate fecha = ingresarFecha();              //la fecha en la que se deben listar los vuelos
+                CapaDatos.downloadVuelos();                     //se trae la lista de vuelos guardada
+                List<Vuelo> vuelos = CapaDatos.getVuelosList();
 
-                //aqui se devuelve una lista con todos los vuelos de la lista principal en la fecha seleccionada
+                        //aqui se devuelve una lista con todos los vuelos de la lista principal en la fecha seleccionada
                 //y se almacena en la lista vuelosEnFecha
                 List<Vuelo> vuelosEnFecha = vuelos.stream()
                                             .filter(vuelo -> vuelo.isOn(fecha))
@@ -47,11 +48,15 @@ public class AdminController implements Controller {
                 /*si se muestran todos los clientes ordenados por apellido habría que ordenarlos quizá
                 antes de subirlos a la lista. Si se los muestra ordenados por id, directamente se los lee
                 como están en la lista*/
-                List<Usuario> clientes = CapaDatos.downloadUsers();
+                CapaDatos.downloadUsers();
+                List<Usuario> clientes = CapaDatos.getUsersList();
+
+
 
                 //sort'em?
 
                 mostrarDatosDeClientes(clientes);
+
 
                 return true;
 
@@ -84,20 +89,60 @@ public class AdminController implements Controller {
         return fecha;   //solo debe llegar aca cuando la fecha ingresada sea la correcta
     }
 
-    //TODO: mostrar toda la info del vuelo
     public void mostrarVuelo(Vuelo vuelo){
-
+        System.out.print("Fecha y hora: " + vuelo.getDateTime());
+        System.out.print("Usuario: " + vuelo.getUsuarioNombre());
+        //TODO: System.out.print("Avion: " + vuelo.getAvion().toString());  //probablemente esto no ande bien
+        System.out.print("Ciudad de origen: " + vuelo.getCiudadOrigen());
+        System.out.print("Ciudad de destino: " + vuelo.getCiudadDestino());
+        //System.out.print("Costo: " + vuelo.getCosto());
     }
 
-    //TODO: un par de cositas
     public void mostrarCliente(Usuario cliente){
         System.out.println("Apellido y nombre: " + cliente.getApellido() + ", " + cliente.getNombre());
         System.out.println("DNI: " + cliente.getDni());
         System.out.println("Edad: " + cliente.getEdad());
         System.out.println("User: " + cliente.getUser());
-        //pass?
-        //TODO: mostrar cateogría máxima de vuelo contratado
-        //TODO: mostrar total gastado por el cliente
+        System.out.println("Categoría máxima de vuelo contratado: " + categoriaMaxVuelo(cliente));
+        System.out.println("Total gastado por el cliente: " + totalGastado(cliente));
+    }
+
+    private String categoriaMaxVuelo(Usuario cliente){
+        String categoriaMaxima = null;
+
+        List<Vuelo> vuelos = obtenerListaDeVuelos();
+
+        for(Vuelo vuelo : vuelos){
+            if(vuelo.getUsuario().getUser().equals(cliente.getUser())){
+                if(vuelo.getAvion().getType().equals("Gold"))
+                    categoriaMaxima = "Gold";
+                else if(vuelo.getAvion().getType().equals("Silver")){
+                    categoriaMaxima = "Silver";
+                }else{
+                    categoriaMaxima = "Bronze";
+                }
+            }
+        }
+
+        return categoriaMaxima;
+    }
+
+    private String totalGastado(Usuario cliente){
+
+        List<Vuelo> vuelos = obtenerListaDeVuelos();
+        float costo = 0;
+
+        for(Vuelo vuelo : vuelos){
+            if(vuelo.getUsuario().getUser().equals(cliente.getUser()))
+                costo += vuelo.getCosto();
+        }
+
+        return String.valueOf(costo);
+    }
+
+    private List<Vuelo> obtenerListaDeVuelos(){
+        CapaDatos.downloadVuelos();
+        return CapaDatos.getVuelosList();
     }
 
     private void mostrarVuelosEnFecha(List<Vuelo> vuelosEnFecha, LocalDate fecha){

@@ -1,10 +1,11 @@
 package com.company.Model;
+import java.io.Serializable;
 
 import java.io.Serializable;
 
 public class Gold extends Avion implements Serializable {
     private boolean wifi;
-    private String silver;
+
 
     public Gold(){}
 
@@ -15,14 +16,11 @@ public class Gold extends Avion implements Serializable {
         this.setVelMax(velMax);
         this.setPropulsion(propulsion);
         this.wifi = wifi;
+        this.type = "Gold";
     }
 
     @Override
     public String toString() {
-        return "Gold{" +
-                "wifi=" + wifi +
-                ", silver='" + silver + '\'' +
-                ", propulsion=" + propulsion +
-                '}';
+        return super.toString() + "Oro";
     }
 }
